@@ -7,6 +7,7 @@ Public set of rules and workflow skills. Plain markdown, no build step, no depen
 - **One capability — one skill.** A duplicate inside the set is a bug; `scripts/validate.sh` catches duplicate and banned bare names.
 - **A skill is a trigger, not an essay.** `SKILL.md` stays short and answers "when does this apply"; long-form material lives in `references/`.
 - **Every rule carries an anchor.** Each rule in `rules/` is a section of its own, so a script can assert that every copy of the ruleset still has it.
+- **A rule that names a skill names one that exists.** `scripts/validate.sh` checks the roster in `rules/` against `skills/`; adding a skill to the rules means adding its name to that roster.
 - **Both languages stay in step.** A rule edited in `rules/agent-rules.en.md` is edited in `rules/agent-rules.ru.md` in the same change.
 - **Commits in English**, meaningful message, push right after.
 

@@ -7,6 +7,8 @@
 #   3. no banned bare names (they collide with other harnesses' triggers): see BANNED
 #   4. vendored skills (with upstream.yaml) carry `source`
 #   5. install targets: broken symlinks are errors, real directories where a symlink is expected are warnings (stale copies)
+#   6. rules name real skills: every skill named in rules/ exists in skills/ (the roster below
+#      is this set's skill list - add a name here when you add a skill to the rules)
 #
 # Exit: 0 green, 1 red.
 set -uo pipefail
@@ -113,6 +115,15 @@ if [[ -d "$SKILLS" ]]; then
 fi
 
 printf 'skills: %d\n' "$count"
+
+# Rules must not name a skill that does not exist: a rule pointing at a missing
+# skill is how a set quietly rots.
+for rfile in "$ROOT"/rules/*.md; do
+  [[ -f "$rfile" ]] || continue
+  while IFS= read -r name; do
+    [[ -d "$SKILLS/$name" ]] || err "$(basename "$rfile"): names skill '$name' which is not in skills/"
+  done < <(grep -o '`[a-z][a-z0-9-]*`' "$rfile" | tr -d '`' | sort -u | grep -E '^(design-gate|brainstorming|writing-plans|test-driven-development|systematic-debugging|verification-before-completion|code-review|commit-gate|code-yagni|code-kiss|code-dry|code-refactor-safely|code-self-audit|dispatching-parallel-agents|using-git-worktrees|finishing-a-development-branch|writing-skills|discover-project-instructions)$')
+done
 
 if ((count > 0)) && [[ -z "${SKIP_TARGETS:-}" ]]; then
   for entry in "${TARGETS[@]}"; do
