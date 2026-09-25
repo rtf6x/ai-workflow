@@ -1,0 +1,27 @@
+{
+  "name": "ai-workflow",
+  "version": "0.1.0",
+  "description": "Rules and workflow skills for agent-assisted development",
+  "license": "MIT",
+  "bin": {
+    "ai-workflow": "bin/ai-workflow.js"
+  },
+  "files": [
+    "bin",
+    "rules",
+    "skills",
+    "scripts",
+    "README.md",
+    "AGENTS.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rtf6x/ai-workflow.git"
+  },
+  "keywords": ["agents", "skills", "rules", "workflow", "tdd"],
+  "private": false
+}

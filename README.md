@@ -1,37 +1,47 @@
 # ai-workflow
 
 Rules and skills for agent-assisted development: the agent does the work, you keep the
-decisions. Plain markdown, no build step, nothing to install beyond bash.
+decisions. Plain markdown; the installer has no dependencies.
 
 Visual guide: <https://rootfox.cc/interesting/ai-workflow/>
 
-## Two ways to set it up
-
-**1. Let an agent do it.** Give your agent this repository (or the guide URL above) and
-ask it to set the process up for your harness. It reads `rules/`, writes them where your
-harness keeps its rules, and links the skills from `skills/`.
-
-**2. By hand.**
+## Install
 
 ```bash
-# rules: copy the file for your language into your harness's rules file
-#   rules/agent-rules.en.md  →  ~/.claude/CLAUDE.md  (or the equivalent for your tool)
-# skills: link the whole set
-scripts/install.sh claude          # claude | omp | pi | opencode | zed | hermes | agents
-scripts/install.sh --dest ~/skills # or any directory
+npx -y github:rtf6x/ai-workflow
 ```
 
-Both paths end in the same place: a rules file your harness loads on every turn, and
-eighteen skills it can reach for.
+That is the whole thing. It finds your harness, copies the eighteen skills into its
+skills directory and merges the rules into its rules file between markers - so a second
+run updates the block instead of appending another copy. Nothing else on your machine is
+touched.
+
+```bash
+npx -y github:rtf6x/ai-workflow --dry-run          # show the plan, change nothing
+npx -y github:rtf6x/ai-workflow --harness claude   # claude | omp | pi | opencode | zed | hermes | agents
+npx -y github:rtf6x/ai-workflow --lang ru          # rules in Russian
+npx -y github:rtf6x/ai-workflow --dest ~/skills --rules-file ~/AGENTS.md   # custom layout
+npx -y github:rtf6x/ai-workflow --no-rules         # skills only
+npx -y github:rtf6x/ai-workflow --link             # symlink instead of copy (from a clone)
+```
+
+Other ways, if you prefer them:
+
+- **Hand it to an agent.** Give your agent this repository and ask it to set the process
+  up: it reads `rules/`, writes them where your tool keeps its rules, and links the
+  skills from `skills/`.
+- **By hand.** `git clone https://github.com/rtf6x/ai-workflow && cd ai-workflow`, copy
+  `rules/agent-rules.en.md` (or `.ru.md`) into your harness rules file, then
+  `scripts/install.sh claude` (or `--dest DIR`) for the skills.
 
 ## What is inside
 
-- `rules/` — the ruleset, English and Russian.
-- `skills/` — the workflow skills, described below.
-- `scripts/install.sh` — link the skills into a harness directory (idempotent; stale
-  copies are reported, dropped skills are swept).
+- `bin/ai-workflow.js` — the installer behind `npx` (Node 18+, no dependencies).
+- `rules/agent-rules.en.md`, `rules/agent-rules.ru.md` — the ruleset, one section per rule.
+- `skills/` — the workflow skills, listed below.
+- `scripts/install.sh` — link the skills into a harness directory from a clone.
 - `scripts/validate.sh` — check the set: frontmatter, duplicate or bare names, broken
-  links. `--selftest` checks the validator itself.
+  links, and rules that name a skill the set does not ship.
 
 ## Skills
 
